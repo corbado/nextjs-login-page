@@ -1,16 +1,16 @@
 "use client";
-import { useState } from 'react';
-import AuthForm from '../../../components/AuthForm';
+import { useState } from "react";
+import AuthForm from "../../../components/AuthForm";
 
 const Signup: React.FC = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSignup = async (data: { email: string; password: string }) => {
-    const res = await fetch('/api/auth/password/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/auth/password/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     const result = await res.json();
@@ -29,13 +29,17 @@ const Signup: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-md">
         {isSuccessful ? (
           <p className="text-green-500 text-center text-lg font-semibold">
-             Welcome!
+            Welcome!
           </p>
         ) : (
           <AuthForm mode="Signup" onSubmit={handleSignup} />
         )}
         {message && (
-          <p className={`text-center mt-4 ${isSuccess ? 'text-green-500' : 'text-red-500'}`}>
+          <p
+            className={`text-center mt-4 ${
+              isSuccess ? "text-green-500" : "text-red-500"
+            }`}
+          >
             {message}
           </p>
         )}

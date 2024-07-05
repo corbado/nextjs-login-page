@@ -1,22 +1,22 @@
 "use client";
-import { useState } from 'react';
-import AuthForm from '../../../components/AuthForm';
+import { useState } from "react";
+import AuthForm from "../../../components/AuthForm";
 
 const Login: React.FC = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const handleLogin = async (data: { email: string; password: string }) => {
-    const res = await fetch('/api/auth/password/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/auth/password/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
     const result = await res.json();
     setMessage(result.message);
 
-    if (res.status === 200) { 
+    if (res.status === 200) {
       setIsSuccessful(true);
       setIsSuccess(true);
     } else {
@@ -35,7 +35,11 @@ const Login: React.FC = () => {
           <AuthForm mode="Login" onSubmit={handleLogin} />
         )}
         {message && (
-          <p className={`text-center mt-4 ${isSuccess ? 'text-green-500' : 'text-red-500'}`}>
+          <p
+            className={`text-center mt-4 ${
+              isSuccess ? "text-green-500" : "text-red-500"
+            }`}
+          >
             {message}
           </p>
         )}
