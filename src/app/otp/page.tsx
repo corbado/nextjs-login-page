@@ -33,7 +33,11 @@ const OtpPage: React.FC = () => {
       return;
     }
     if (!validateContactInfo(contactInfo)) {
-      setMessage(`Invalid ${deliveryMethod} format`);
+      setMessage(
+        deliveryMethod === "email"
+          ? "Invalid email format"
+          : "Invalid phone number format"
+      );
       setIsSuccess(false);
       return;
     }
