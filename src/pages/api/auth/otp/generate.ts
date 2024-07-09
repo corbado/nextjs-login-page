@@ -31,7 +31,7 @@ const sendEmail = async (email: string, otp: string) => {
 
   // Define the email options
   const mailOptions = {
-    from: '"Your App" <yourapp@example.com>', // Sender address
+    from: 'app@test.com', // Sender address
     to: email, // Recipient address
     subject: 'Your OTP Code', // Subject line
     text: `Your OTP code is ${otp}`, // Plain text body
@@ -39,7 +39,7 @@ const sendEmail = async (email: string, otp: string) => {
 
   // Send the email and log the preview URL
   let info = await transporter.sendMail(mailOptions);
-  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+  console.log('Email Preview URL: %s', nodemailer.getTestMessageUrl(info));
 };
 
 // API route handler for generating and sending OTP

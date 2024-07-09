@@ -6,8 +6,26 @@ const OtpPage: React.FC = () => {
   const [otp, setOtp] = useState('');
   const [message, setMessage] = useState('');
   const [isOtpSent, setIsOtpSent] = useState(false);
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
 
   const handleGenerateOtp = async () => {
+    if (!email) {
+      setMessage('Email is required');
+      setIsSuccess(false);
+      return;
+    }
+    if (!validateEmail(email)) {
+      setMessage('Invalid email format');
+      setIsSuccess(false);
+      return;
+    }
+
     const res = await fetch('/api/auth/otp/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -15,7 +33,12 @@ const OtpPage: React.FC = () => {
     });
     const result = await res.json();
     setMessage(result.message);
-    setIsOtpSent(true);
+    if (res.status === 200) {
+      setIsOtpSent(true);
+      setIsSuccess(true);
+    } else {
+      setIsSuccess(false);
+    }
   };
 
   const handleVerifyOtp = async () => {
@@ -26,6 +49,12 @@ const OtpPage: React.FC = () => {
     });
     const result = await res.json();
     setMessage(result.message);
+    if (res.status === 200) {
+      setIsOtpVerified(true);
+      setIsSuccess(true);
+    } else {
+      setIsSuccess(false);
+    }
   };
 
   return (
@@ -51,23 +80,39 @@ const OtpPage: React.FC = () => {
           </div>
         ) : (
           <div>
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              required
-              className="w-full p-3 border border-gray-300 rounded mb-4"
-            />
-            <button
-              onClick={handleVerifyOtp}
-              className="w-full bg-blue-500 text-white p-3 rounded hover:bg-green-600"
-            >
-              Verify OTP
-            </button>
+            {!isOtpVerified ? (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Enter OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  required
+                  className="w-full p-3 border border-gray-300 rounded mb-4"
+                />
+                <button
+                  onClick={handleVerifyOtp}
+                  className="w-full bg-blue-500 text-white p-3 rounded"
+                >
+                  Verify OTP
+                </button>
+              </div>
+            ) : (
+              <div className="text-center">
+                <h2 className="text-xl font-semibold text-green-500">Welcome</h2>
+              </div>
+            )}
           </div>
         )}
-        {message && <p className="mt-4 text-center text-green-500">{message}</p>}
+        {message && (
+          <p
+            className={`text-center mt-4 ${
+              isSuccess ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {message}
+          </p>
+        )}
       </div>
     </div>
   );
