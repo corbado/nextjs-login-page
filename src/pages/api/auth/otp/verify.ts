@@ -1,29 +1,51 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import bcrypt from 'bcryptjs';
-import dbConnect from '@/lib/mongodb';
-import Otp from '@/models/Otp';
+import type { NextApiRequest, NextApiResponse } from "next";
+import bcrypt from "bcryptjs";
+import dbConnect from "@/lib/mongodb";
+import Otp from "@/models/Otp";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+// API route handler for verifying OTP
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  // Connect to the MongoDB database
   await dbConnect();
-  const { email, otp } = req.body;
 
-  if (!email || !otp) {
-    return res.status(400).json({ message: 'Email and OTP are required' });
+  // Extract email, phone number, and OTP from the request body
+  const { email, phoneNumber, otp } = req.body;
+
+  // Validate input: Ensure either email or phone number, and OTP are provided
+  if ((!email && !phoneNumber) || !otp) {
+    return res
+      .status(400)
+      .json({ message: "Email or phone number and OTP are required" });
   }
 
-  const otpRecord = await Otp.findOne({ email });
+  // Find OTP record by email or phone number
+  const otpRecord = email
+    ? await Otp.findOne({ email }) // Find by email if email is provided
+    : await Otp.findOne({ phoneNumber }); // Find by phone number if phone number is provided
 
+  // Check if OTP record exists
   if (!otpRecord) {
-    return res.status(400).json({ message: 'OTP not found or expired' });
+    return res.status(400).json({ message: "OTP not found or expired" });
   }
 
+  // Compare provided OTP with the hashed OTP in the database
   const isMatch = bcrypt.compareSync(otp, otpRecord.otp);
 
+  // If OTP does not match, return an error
   if (!isMatch) {
-    return res.status(400).json({ message: 'Invalid OTP' });
+    return res.status(400).json({ message: "Invalid OTP" });
   }
 
-  await Otp.deleteOne({ email }); // OTP can only be used once
+  // Delete the OTP record after successful verification
+  if (email) {
+    await Otp.deleteOne({ email });
+  } else if (phoneNumber) {
+    await Otp.deleteOne({ phoneNumber });
+  }
 
-  return res.status(200).json({ message: 'OTP verified successfully' });
+  // Respond with a success message
+  return res.status(200).json({ message: "OTP verified successfully" });
 }

@@ -1,35 +1,52 @@
 "use client";
-import { useState } from 'react';
+import { useState } from "react";
 
 const OtpPage: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
-  const [message, setMessage] = useState('');
+  // State variables to manage contact info, OTP, messages, and delivery method
+  const [contactInfo, setContactInfo] = useState("");
+  const [deliveryMethod, setDeliveryMethod] = useState("email");
+  const [otp, setOtp] = useState("");
+  const [message, setMessage] = useState("");
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+  // Function to validate the contact information based on delivery method
+  const validateContactInfo = (info: string) => {
+    if (deliveryMethod === "email") {
+      // Regular expression for email validation
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(info);
+    } else if (deliveryMethod === "sms") {
+      // Regular expression for phone number validation
+      const re = /^\+?[1-9]\d{1,14}$/;
+      return re.test(info);
+    }
+    return false;
   };
 
+  // Function to handle OTP generation
   const handleGenerateOtp = async () => {
-    if (!email) {
-      setMessage('Email is required');
+    if (!contactInfo) {
+      setMessage("Contact information is required");
       setIsSuccess(false);
       return;
     }
-    if (!validateEmail(email)) {
-      setMessage('Invalid email format');
+    if (!validateContactInfo(contactInfo)) {
+      setMessage(`Invalid ${deliveryMethod} format`);
       setIsSuccess(false);
       return;
     }
 
-    const res = await fetch('/api/auth/otp/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
+    // Sending request to generate OTP
+    const res = await fetch("/api/auth/otp/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: deliveryMethod === "email" ? contactInfo : undefined,
+        phoneNumber: deliveryMethod === "sms" ? contactInfo : undefined,
+        deliveryMethod,
+      }),
     });
     const result = await res.json();
     setMessage(result.message);
@@ -41,11 +58,17 @@ const OtpPage: React.FC = () => {
     }
   };
 
+  // Function to handle OTP verification
   const handleVerifyOtp = async () => {
-    const res = await fetch('/api/auth/otp/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, otp }),
+    // Sending request to verify OTP
+    const res = await fetch("/api/auth/otp/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: deliveryMethod === "email" ? contactInfo : undefined,
+        phoneNumber: deliveryMethod === "sms" ? contactInfo : undefined,
+        otp,
+      }),
     });
     const result = await res.json();
     setMessage(result.message);
@@ -60,28 +83,49 @@ const OtpPage: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h1 className="text-2xl font-semibold mb-6 text-center">OTP Authentication</h1>
+        <h1 className="text-2xl font-semibold mb-6 text-center">
+          OTP Authentication
+        </h1>
         {!isOtpSent ? (
-          <div>
+          <>
+            {/* Dropdown for selecting OTP delivery method */}
+            <div className="mb-4">
+              <label className="block text-gray-800">OTP Delivery Method</label>
+              <select
+                value={deliveryMethod}
+                onChange={(e) => setDeliveryMethod(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded"
+              >
+                <option value="email">Email</option>
+                <option value="sms">SMS</option>
+              </select>
+            </div>
+            {/* Input for entering email or phone number based on delivery method */}
             <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type={deliveryMethod === "email" ? "email" : "text"}
+              placeholder={
+                deliveryMethod === "email"
+                  ? "Enter your email"
+                  : "Enter your phone number"
+              }
+              value={contactInfo}
+              onChange={(e) => setContactInfo(e.target.value)}
               required
               className="w-full p-3 border border-gray-300 rounded mb-4"
             />
+            {/* Button to generate OTP */}
             <button
               onClick={handleGenerateOtp}
               className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600"
             >
               Generate OTP
             </button>
-          </div>
+          </>
         ) : (
           <div>
             {!isOtpVerified ? (
               <div>
+                {/* Input for entering OTP */}
                 <input
                   type="text"
                   placeholder="Enter OTP"
@@ -90,6 +134,7 @@ const OtpPage: React.FC = () => {
                   required
                   className="w-full p-3 border border-gray-300 rounded mb-4"
                 />
+                {/* Button to verify OTP */}
                 <button
                   onClick={handleVerifyOtp}
                   className="w-full bg-blue-500 text-white p-3 rounded"
@@ -99,11 +144,12 @@ const OtpPage: React.FC = () => {
               </div>
             ) : (
               <div className="text-center">
-                <h2 className="text-xl font-semibold text-green-500">Welcome</h2>
+                <h2 className="text-xl font-semibold">Welcome</h2>
               </div>
             )}
           </div>
         )}
+        {/* Display message */}
         {message && (
           <p
             className={`text-center mt-4 ${

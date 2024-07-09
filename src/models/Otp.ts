@@ -1,16 +1,26 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from "mongoose";
 
+// Interface defining the OTP document structure
 export interface IOtp extends Document {
-  email: string;
-  otp: string;
-  createdAt: Date;
+  email?: string; // Optional email field
+  phoneNumber?: string; // Optional phone number field
+  otp: string; // OTP value
+  createdAt: Date; // Creation timestamp
 }
 
+// Define the OTP schema
 const OtpSchema: Schema<IOtp> = new Schema({
-  email: { type: String, required: true },
-  otp: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now, index: { expires: '10m' } }, // OTP expires in 10 minutes
+  email: { type: String }, // Email field
+  phoneNumber: { type: String }, // Phone number field
+  otp: { type: String, required: true }, // OTP field (required)
+  createdAt: { type: Date, default: Date.now, index: { expires: "10m" } }, // Creation timestamp with 10-minute expiry
 });
 
-const Otp = mongoose.models.Otp || mongoose.model<IOtp>('Otp', OtpSchema);
+// Ensure at least one of email or phoneNumber is provided
+OtpSchema.path("email").validate(function (value) {
+  return this.email || this.phoneNumber;
+}, "Email or phone number is required");
+
+// Create or reuse the OTP model
+const Otp = mongoose.models.Otp || mongoose.model<IOtp>("Otp", OtpSchema);
 export default Otp;
