@@ -12,9 +12,11 @@
     "bcryptjs": "^2.4.3",
     "mongoose": "^8.4.4",
     "next": "14.2.4",
+    "next-auth": "^4.24.7",
     "nodemailer": "^6.9.14",
     "react": "^18",
     "react-dom": "^18",
+    "react-icons": "^5.2.1",
     "twilio": "^5.2.2"
   },
   "devDependencies": {
