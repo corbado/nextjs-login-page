@@ -1,20 +1,31 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import speakeasy from 'speakeasy';
+import { NextApiRequest, NextApiResponse } from "next";
+import speakeasy from "speakeasy";
+import Totp from "../../../../models/Totp";
+import connectDb from "../../../../lib/mongodb";
 
-const verify2FA = (req: NextApiRequest, res: NextApiResponse) => {
-  // Extract the token and secret from the request body
-  const { token, secret } = req.body;
-  
-  // Verify the token using speakeasy
+const verify2FA = async (req: NextApiRequest, res: NextApiResponse) => {
+  await connectDb();
+
+  const { email, token } = req.body;
+
+  const user = await Totp.findOne({ email });
+
+  if (!user || !user.secret) {
+    res.status(400).json({ error: "2FA not setup for this user" });
+    return;
+  }
+
   const verified = speakeasy.totp.verify({
-    secret,          // The shared secret key
-    encoding: 'base32', 
-    token,           // The TOTP token provided by the user
+    secret: user.secret,
+    encoding: "base32",
+    token,
   });
 
-  // Send the verification result back to the client
+  if (verified) {
+    await Totp.updateOne({ email }, { twoFactorEnabled: true });
+  }
+
   res.status(200).json({ verified });
 };
 
-// Export the function as the default export of the module
 export default verify2FA;
