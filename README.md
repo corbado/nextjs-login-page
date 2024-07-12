@@ -80,7 +80,6 @@ Create a `.env.local` file in the root of your project and add the following env
 
 ```plaintext
 MONGODB_URI=your_database_connection_string
-NEXTAUTH_URL=http://localhost:3000
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 TWILIO_ACCOUNT_SID=your_twilio_account_sid
