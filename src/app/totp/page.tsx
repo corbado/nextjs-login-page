@@ -2,19 +2,19 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-export default function TwoFactorAuth() {
+export default function TOTP() {
   const [email, setEmail] = useState("");
   const [qrCode, setQrCode] = useState("");
   const [token, setToken] = useState("");
   const [verified, setVerified] = useState(false);
   const [error, setError] = useState("");
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [totpEnabled, setTotpEnabled] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [emailError, setEmailError] = useState("");
 
-  // Check the 2FA status when the email changes
+  // Check the TOTP status when the email changes
   useEffect(() => {
-    const check2FAStatus = async () => {
+    const checkTOTPStatus = async () => {
       if (email) {
         const res = await fetch("/api/auth/totp/status", {
           method: "POST",
@@ -22,11 +22,11 @@ export default function TwoFactorAuth() {
           body: JSON.stringify({ email }),
         });
         const data = await res.json();
-        setTwoFactorEnabled(data.twoFactorEnabled);
+        setTotpEnabled(data.totpEnabled);
       }
     };
 
-    check2FAStatus();
+    checkTOTPStatus();
   }, [email]);
 
   // Handle login process
@@ -39,7 +39,7 @@ export default function TwoFactorAuth() {
     setLoggedIn(true);
   };
 
-  // Generate QR code for 2FA setup
+  // Generate QR code for TOTP setup
   const generateQrCode = async () => {
     const res = await fetch("/api/auth/totp/generate", {
       method: "POST",
@@ -64,7 +64,7 @@ export default function TwoFactorAuth() {
     if (data.verified) {
       setVerified(true);
       setError("");
-      setTwoFactorEnabled(true);
+      setTotpEnabled(true);
     } else {
       setVerified(false);
       setError("Invalid Token. Please try again.");
@@ -103,8 +103,8 @@ export default function TwoFactorAuth() {
             </button>
           </>
         )}
-        {/* Show the generate QR code button if the user is logged in but 2FA is not enabled */}
-        {loggedIn && !twoFactorEnabled && !qrCode && (
+        {/* Show the generate QR code button if the user is logged in but TOTP is not enabled */}
+        {loggedIn && !totpEnabled && !qrCode && (
           <button
             onClick={generateQrCode}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
@@ -112,8 +112,8 @@ export default function TwoFactorAuth() {
             Generate QR Code
           </button>
         )}
-        {/* Show the token input and verify button if 2FA is enabled but not yet verified */}
-        {loggedIn && twoFactorEnabled && !verified && !qrCode && (
+        {/* Show the token input and verify button if TOTP is enabled but not yet verified */}
+        {loggedIn && totpEnabled && !verified && !qrCode && (
           <>
             <input
               type="text"
@@ -165,8 +165,8 @@ export default function TwoFactorAuth() {
             {error && <p className="text-red-500 text-center">{error}</p>}
           </>
         )}
-        {/* Show the 2FA enabled card and logout button if verification is successful */}
-        {verified && twoFactorEnabled && (
+        {/* Show the TOTP enabled card and logout button if verification is successful */}
+        {verified && totpEnabled && (
           <>
             <div className="border border-green-500 bg-green-100 p-4 rounded-lg text-center mt-8 mb-4">
               <h5 className="font-bold text-green-700">Your TOTP is enabled</h5>

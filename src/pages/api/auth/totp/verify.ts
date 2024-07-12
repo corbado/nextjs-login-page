@@ -3,7 +3,7 @@ import speakeasy from "speakeasy";
 import Totp from "../../../../models/Totp";
 import connectDb from "../../../../lib/mongodb";
 
-const verify2FA = async (req: NextApiRequest, res: NextApiResponse) => {
+const verifyTOTP = async (req: NextApiRequest, res: NextApiResponse) => {
   await connectDb();
 
   const { email, token } = req.body;
@@ -11,7 +11,7 @@ const verify2FA = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await Totp.findOne({ email });
 
   if (!user || !user.secret) {
-    res.status(400).json({ error: "2FA not setup for this user" });
+    res.status(400).json({ error: "TOTP not setup for this user" });
     return;
   }
 
@@ -22,10 +22,10 @@ const verify2FA = async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   if (verified) {
-    await Totp.updateOne({ email }, { twoFactorEnabled: true });
+    await Totp.updateOne({ email }, { totpEnabled: true });
   }
 
   res.status(200).json({ verified });
 };
 
-export default verify2FA;
+export default verifyTOTP;

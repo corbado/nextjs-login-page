@@ -4,7 +4,8 @@ import qrcode from "qrcode";
 import Totp from "../../../../models/Totp";
 import connectDb from "../../../../lib/mongodb";
 
-const generate2FA = async (req: NextApiRequest, res: NextApiResponse) => {
+// Generate TOTP secret and QR code
+const generateTOTP = async (req: NextApiRequest, res: NextApiResponse) => {
   await connectDb();
 
   const { email } = req.body;
@@ -16,8 +17,8 @@ const generate2FA = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const user = await Totp.findOne({ email });
 
-  if (user && user.twoFactorEnabled) {
-    res.status(400).json({ error: "2FA already enabled" });
+  if (user && user.totpEnabled) {
+    res.status(400).json({ error: "TOTP already enabled" });
     return;
   }
 
@@ -28,7 +29,7 @@ const generate2FA = async (req: NextApiRequest, res: NextApiResponse) => {
       } else {
         await Totp.updateOne(
           { email },
-          { email, secret: secret.base32, twoFactorEnabled: false },
+          { email, secret: secret.base32, totpEnabled: false },
           { upsert: true }
         );
         res.status(200).json({ secret: secret.base32, qrCode: data_url });
@@ -39,4 +40,4 @@ const generate2FA = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default generate2FA;
+export default generateTOTP;

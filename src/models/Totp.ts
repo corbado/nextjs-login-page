@@ -3,13 +3,13 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 interface ITotp extends Document {
   email: string;
   secret: string;
-  twoFactorEnabled: boolean;
+  totpEnabled: boolean;
 }
 
 const TotpSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
   secret: { type: String, required: true },
-  twoFactorEnabled: { type: Boolean, default: false },
+  totpEnabled: { type: Boolean, default: false },
 });
 
 const Totp: Model<ITotp> =
