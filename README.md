@@ -1,8 +1,8 @@
 <img width="1070" alt="GitHub Repo Cover" src="https://github.com/corbado/corbado-php/assets/18458907/aa4f9df6-980b-4b24-bb2f-d71c0f480971">
 
-# Next.js (TypeScript) Authentication Methods
+# Next.js (TypeScript) Login Page
 
-This repository contains various authentication methods implemented in a Next.js application with TypeScript. It demonstrates how to integrate different authentication mechanisms such as password-based login, OTP (One-Time Password), Google OAuth, and TOTP (Time-based One-Time Password).
+This repository contains various authentication methods for a Next.js login page with TypeScript. It demonstrates how to integrate different authentication methods such as password-based login, OTP (one-time passcode) via email and SMS, Google OAuth, and TOTP (time-based one-time passcode) via authenticator app.
 
 ## Table of Contents
 - [Important Directories and Files](#important-directories-and-files)
