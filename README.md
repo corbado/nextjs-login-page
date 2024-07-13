@@ -92,7 +92,7 @@ TWILIO_PHONE_NUMBER=your_twilio_phone_number
 ### Run the project locally
 1. Clone the repository
    ```sh
-   git clone https://github.com/yourusername/nextjs-auth-methods.git
+   git clone https://github.com/corbado/nextjs-login-page.git
    cd nextjs-auth-methods
    
 2. Install all the dependencies
@@ -115,7 +115,7 @@ This method allows users to register and log in using an email and password.
   - Login: `src/pages/api/auth/password/login.ts`
 - Database Model: `src/models/User.ts`
 
-### OTP (One-Time Password)
+### OTP (One-Time Passcode)
 This method uses a one-time password sent to the user's email or phone for authentication.
 
 - OTP Page: `src/app/otp/page.tsx`
@@ -124,14 +124,14 @@ This method uses a one-time password sent to the user's email or phone for authe
   - Verify OTP: `src/pages/api/auth/otp/verify.ts`
 - Database Model: `src/models/Otp.ts`
 
-### Google OAuth
+### Google Social Login (OAuth)
 This method allows users to log in using their Google account.
 
 - Google Login Page: `src/app/googleLogin/page.tsx`
 - NextAuth.js Configuration: `src/pages/api/auth/[...nextauth].ts`
 
-### TOTP (Time-based One-Time Password)
-This method uses TOTP for two-factor authentication.
+### TOTP (Time-based One-Time Passcode) via Authenticator App
+This method uses TOTP for user authentication.
 
 - TOTP Page: `src/app/totp/page.tsx`
 - API Routes:
