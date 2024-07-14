@@ -139,8 +139,3 @@ This method uses TOTP for user authentication.
   - Verify TOTP: `src/pages/api/auth/totp/verify.ts`
   - Check TOTP Status: `src/pages/api/auth/totp/status.ts`
 - Database Model: `src/models/Totp.ts`
-
-## Conclusion
-This project demonstrates various authentication methods in a Next.js application. Each method is designed to provide secure and user-friendly authentication experiences. Choose the method that best suits your application's needs and user preferences.
-
-
