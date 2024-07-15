@@ -74,6 +74,40 @@ Before running this project, ensure you have the following installed:
 - npm (Node Package Manager)
 - MongoDB
 
+### Setting Up MongoDB
+
+#### Install MongoDB
+
+1. **Download MongoDB:**
+   - Go to the [MongoDB Download Center](https://www.mongodb.com/try/download/community) and download the Community Server version suitable for your operating system.
+
+2. **Install MongoDB:**
+   - Follow the installation instructions for your operating system:
+     - **Windows:** Run the downloaded `.msi` file and follow the setup wizard.
+     - **macOS:** Run the downloaded `.tgz` file and follow the installation steps using Homebrew:
+       ```sh
+       brew tap mongodb/brew
+       brew install mongodb-community@4.4
+       ```
+     - **Linux:** Follow the specific instructions for your distribution from the [MongoDB installation documentation](https://docs.mongodb.com/manual/administration/install-on-linux/).
+
+#### Start MongoDB
+
+1. **Start the MongoDB server:**
+   - **Windows:** Run `mongod` from the Command Prompt.
+   - **macOS:** Use Homebrew to start the MongoDB service:
+     ```sh
+     brew services start mongodb/brew/mongodb-community
+     ```
+   - **Linux:** Run `mongod` from the terminal.
+
+2. **Verify MongoDB is running:**
+   - Open another terminal window and run:
+     ```sh
+     mongo
+     ```
+   - This command starts the MongoDB shell and connects to the running MongoDB instance. You should see the MongoDB shell prompt if the server is running correctly.
+
 ### Configure Environment Variables
 
 Create a `.env.local` file in the root of your project and add the following environment variables:
