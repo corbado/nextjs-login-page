@@ -1,5 +1,3 @@
-// pages/index.js
-
 import Link from "next/link";
 
 export default function Home() {
@@ -9,9 +7,9 @@ export default function Home() {
         <h1 className="text-2xl font-bold mb-6">Welcome to Our App</h1>
         <p className="mb-4">Choose a login method:</p>
         <div className="flex flex-col space-y-4">
-          <Link href="/totp">
+          <Link href="/password/login">
             <p className="bg-white border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded hover:bg-blue-400 hover:text-white">
-              TOTP-based Authentication
+              Password-based Authentication
             </p>
           </Link>
           <Link href="/otp">
@@ -24,17 +22,11 @@ export default function Home() {
               Google-based Authentication
             </p>
           </Link>
-          <Link href="/password/login">
+          <Link href="/totp">
             <p className="bg-white border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded hover:bg-blue-400 hover:text-white">
-              Email&Password-based Authentication
+              TOTP-based Authentication
             </p>
           </Link>
-          <Link href="/password/signup">
-            <p className="bg-white border border-blue-500 text-blue-500 font-bold py-2 px-4 rounded hover:bg-blue-400 hover:text-white">
-              Signup
-            </p>
-          </Link>
-          
         </div>
       </div>
     </div>

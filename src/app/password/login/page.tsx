@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import AuthForm from "../../../components/AuthForm";
+import Link from "next/link";
 
 const Login: React.FC = () => {
   const [message, setMessage] = useState("");
@@ -32,7 +33,14 @@ const Login: React.FC = () => {
             Welcome!
           </p>
         ) : (
-          <AuthForm mode="Login" onSubmit={handleLogin} />
+          <>
+            <AuthForm mode="Login" onSubmit={handleLogin} />
+            <Link href="/password/signup">
+              <p className="text-center text-blue-500 font-bold underline py-4">
+                Create a new account
+              </p>
+            </Link>
+          </>
         )}
         {message && (
           <p

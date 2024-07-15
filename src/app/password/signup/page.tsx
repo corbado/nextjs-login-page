@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import AuthForm from "../../../components/AuthForm";
+import Link from "next/link";
 
 const Signup: React.FC = () => {
   const [message, setMessage] = useState("");
@@ -28,9 +29,11 @@ const Signup: React.FC = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-md">
         {isSuccessful ? (
-          <p className="text-green-500 text-center text-lg font-semibold">
-            Welcome!
-          </p>
+          <>
+            <p className="text-green-500 text-center text-lg font-semibold">
+              Welcome!
+            </p>
+          </>
         ) : (
           <AuthForm mode="Signup" onSubmit={handleSignup} />
         )}
@@ -42,6 +45,13 @@ const Signup: React.FC = () => {
           >
             {message}
           </p>
+        )}
+        {isSuccessful && (
+          <Link href="/password/login">
+            <p className="text-center text-blue-500 font-bold underline py-4">
+              Back to login
+            </p>
+          </Link>
         )}
       </div>
     </div>
